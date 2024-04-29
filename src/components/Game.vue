@@ -1,11 +1,16 @@
 <template>
   <div class="container">
     <div class="grid">
-      <div v-for="(cell, index) in cells" :key="index" class="cell" :class="{ 'flashing': flashingCells.includes(index) }">
+      <div
+        v-for="(cell, index) in cells"
+        :key="index"
+        class="cell"
+        :class="{ flashing: flashingCells.includes(index) }"
+      >
         <div v-if="index === 0" class="ball"></div>
         <div v-else-if="index === 2" class="ball"></div>
         <div v-else-if="index === 6" class="ball"></div>
-        <div v-else-if="index === 8" class="ball"></div>   
+        <div v-else-if="index === 8" class="ball"></div>
       </div>
     </div>
   </div>
@@ -22,13 +27,14 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
   background: #d3d3d3;
   height: 100vh;
+  overflow: hidden;
 }
 
 .grid {
@@ -43,7 +49,7 @@ export default {
 .cell {
   height: 100px;
   border: black solid 2px;
-  background: radial-gradient(circle, rgba(113,81,95,1) 81%, rgba(0,0,0,1) 100%);
+  background: radial-gradient(circle, rgba(113, 81, 95, 1) 81%, rgba(0, 0, 0, 1) 100%);
   position: relative;
 }
 
@@ -52,15 +58,20 @@ export default {
 }
 
 @keyframes flashingAnimation {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; };
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
 }
 
 .ball {
   border-radius: 50%;
   width: 30px;
   height: 30px;
-  background-color: #A5F12B;
+  background-color: #a5f12b;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -74,11 +85,16 @@ export default {
   top: 50%;
   left: 50%;
   position: absolute;
-  transform: translate(-50%, -50%); 
+  transform: translate(-50%, -50%);
 }
 
 @keyframes moveRight {
-  from { left: 50%; transform: translate(-50%, -50%); }
-  to { left: 150%; }
+  from {
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  to {
+    left: 150%;
+  }
 }
 </style>
