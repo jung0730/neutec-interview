@@ -94,7 +94,7 @@ export default {
     transform: translate(-50%, -50%);
   }
   to {
-    left: 150%;
+    left: 270%;
   }
 }
 </style>

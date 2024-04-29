@@ -1,28 +1,30 @@
 <template>
   <div class="container">
     <button class="menu" @click="toggleSidebar"></button>
-    <nav class="sidebar" v-if="isSidebarVisible">
-      <div
-        v-for="category in menuItems"
-        class="items"
-        :key="category.key"
-        :class="{ selected: isCategorySelected(category) }"
-      >
-        <div @click="toggleCategory(category)">
-          {{ category.text }}
-        </div>
-        <div v-show="category.expanded" class="sub-items">
-          <div v-for="subcategory in category.children" :key="subcategory.key">
-            <div @click="toggleSubCategory(subcategory)">
-              {{ subcategory.text }}
-            </div>
-            <div v-show="subcategory.children && subcategory.expanded" class="sub-items-children">
-              <div v-for="item in subcategory.children" :key="item.key">{{ item.text }}</div>
+    <transition>
+      <nav class="sidebar" v-if="isSidebarVisible">
+        <div
+          v-for="category in menuItems"
+          class="items"
+          :key="category.key"
+          :class="{ selected: isCategorySelected(category) }"
+        >
+          <div @click="toggleCategory(category)" class="text">
+            {{ category.text }}
+          </div>
+          <div v-show="category.expanded" class="sub-items">
+            <div v-for="subcategory in category.children" :key="subcategory.key">
+              <div @click="toggleSubCategory(subcategory)" class="text">
+                {{ subcategory.text }}
+              </div>
+              <div v-show="subcategory.children && subcategory.expanded" class="sub-items-children">
+                <div v-for="item in subcategory.children" :key="item.key" class="text">{{ item.text }}</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </transition>
   </div>
 </template>
 
@@ -169,8 +171,8 @@ export default {
 
 .sidebar {
   top: 0;
-  width: 500px;
-  background-color: black;
+  width: 45vw;
+  background-color: rgba(0, 0, 0, 0.9);
   position: fixed;
   height: 100vh;
   right: 0;
@@ -179,21 +181,41 @@ export default {
 }
 
 .items {
-  font-size: 40px;
-  padding: 20px;
+  font-size: 24px;
+  padding: 10px;
+  cursor: pointer;
 }
 
 .selected {
   background: gray;
 }
 
+.text:hover {
+  color: yellow;
+}
+
 .sub-items {
-  font-size: 30px;
-  padding: 20px;
+  font-size: 16px;
+  padding: 10px;
 }
 
 .sub-items-children {
-  font-size: 20px;
-  padding: 20px;
+  font-size: 8px;
+  padding: 10px;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 1s;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+
+.v-enter-to,
+.v-leave-from {
+  opacity: 1;
 }
 </style>
