@@ -16,15 +16,11 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      cells: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-      flashingCells: [2, 4, 8],
-    };
-  },
-};
+<script setup>
+import { reactive } from 'vue';
+
+const cells = reactive([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+const flashingCells = [2, 4, 8];
 </script>
 
 <style scoped>
