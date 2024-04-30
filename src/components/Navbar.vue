@@ -2,7 +2,7 @@
   <div class="container">
     <button class="menu" @click="toggleSidebar"></button>
     <transition>
-      <nav class="sidebar" v-if="isSidebarVisible">
+      <nav class="sidebar" v-if="isSidebarVisible" v-focus tabindex="0" @blur="closeSidebar">
         <div
           v-for="category in menuItems"
           class="items"
@@ -27,125 +27,60 @@
     </transition>
   </div>
 </template>
+<script setup>
+import { ref, reactive } from 'vue';
+import items from '../data.js';
 
-<script>
-export default {
-  data() {
-    return {
-      isSidebarVisible: false,
-      selectedCategoryKey: null,
-      selectedSubcategoryKey: null,
-      menuItems: [
-        {
-          key: '64f',
-          text: '好喝黑糖',
-          children: [
-            {
-              key: '445',
-              text: '黑糖鮮奶',
-              children: [
-                { key: '37a', text: '黑糖珍珠鮮奶' },
-                { key: 'feb', text: '黑糖芋圓鮮奶' },
-                { key: '59c', text: '黑糖蒟蒻鮮奶' },
-              ],
-            },
-            {
-              key: '29e',
-              text: '黑糖冬瓜',
-              children: [
-                { key: 'ac3', text: '黑糖冬瓜牛奶' },
-                { key: 'ca0', text: '黑糖冬瓜珍珠' },
-              ],
-            },
-          ],
-        },
-        {
-          key: '6c3',
-          text: '茶',
-          children: [
-            { key: '5dc', text: '烏龍綠' },
-            { key: 'b5f', text: '綠茶' },
-            { key: 'b09', text: '紅茶' },
-            { key: '887', text: '青茶' },
-          ],
-        },
-        {
-          key: 'c81',
-          text: '咖啡',
-          children: [
-            {
-              key: 'e02',
-              text: '黑咖啡',
-              children: [
-                { key: 'd20', text: '濃縮咖啡' },
-                { key: '1f8', text: '美式咖啡' },
-              ],
-            },
-            {
-              key: 'd7a',
-              text: '牛奶咖啡',
-              children: [
-                {
-                  key: 'c09',
-                  text: '拿鐵',
-                  children: [
-                    { key: 'db2', text: '黑糖拿鐵' },
-                    { key: '9f6', text: '榛果拿鐵' },
-                    { key: 'b61', text: '香草拿鐵' },
-                  ],
-                },
-                { key: '9ac', text: '卡布奇諾' },
-                { key: 'ce8', text: '摩卡' },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-  },
-  methods: {
-    toggleSidebar() {
-      this.isSidebarVisible = !this.isSidebarVisible;
-    },
-    toggleItem(item, selectedItemKey, selectedSubItemKey) {
-      if (this[selectedItemKey] === item.key) {
-        this[selectedItemKey] = null;
-      } else {
-        this[selectedItemKey] = item.key;
-        if (selectedSubItemKey) {
-          this[selectedSubItemKey] = null;
-        }
-      }
-      item.expanded = !item.expanded;
-    },
-    toggleCategory(category) {
-      this.toggleItem(category, 'selectedCategoryKey', 'selectedSubcategoryKey');
-      this.closeOtherItems(this.menuItems, category.key, 'expanded');
-    },
-    toggleSubCategory(subcategory) {
-      this.toggleItem(subcategory, 'selectedSubcategoryKey');
-      this.closeOtherSubItems(subcategory);
-    },
-    closeOtherItems(items, keyToKeep, propertyToUpdate) {
-      items.forEach((item) => {
-        if (item.key !== keyToKeep) {
-          item[propertyToUpdate] = false;
-        }
-      });
-    },
-    closeOtherSubItems(subcategory) {
-      this.menuItems.forEach((category) => {
-        if (category.children) {
-          this.closeOtherItems(category.children, subcategory.key, 'expanded');
-        }
-      });
-    },
-    isCategorySelected(category) {
-      return this.selectedCategoryKey === category.key;
-    },
-  },
+const isSidebarVisible = ref(false);
+const selectedCategoryKey = ref(null);
+const selectedSubcategoryKey = ref(null);
+
+const menuItems = reactive(items);
+
+const closeSidebar = () => {
+  isSidebarVisible.value = false;
+};
+const toggleSidebar = () => {
+  isSidebarVisible.value = !isSidebarVisible.value;
+};
+const toggleItem = (item, selectedItemKey, selectedSubItemKey) => {
+  if (selectedItemKey.value === item.key) {
+    selectedItemKey.value = null;
+  } else {
+    selectedItemKey.value = item.key;
+    if (selectedSubItemKey) {
+      selectedSubItemKey.value = null;
+    }
+  }
+  item.expanded = !item.expanded;
+};
+const toggleCategory = (category) => {
+  toggleItem(category, selectedCategoryKey, selectedSubcategoryKey);
+  closeOtherItems(menuItems, category.key, 'expanded');
+};
+const toggleSubCategory = (subcategory) => {
+  toggleItem(subcategory, selectedSubcategoryKey);
+  closeOtherSubItems(subcategory);
+};
+const closeOtherItems = (items, keyToKeep, propertyToUpdate) => {
+  items.forEach((item) => {
+    if (item.key !== keyToKeep) {
+      item[propertyToUpdate] = false;
+    }
+  });
+};
+const closeOtherSubItems = (subcategory) => {
+  menuItems.forEach((category) => {
+    if (category.children) {
+      closeOtherItems(category.children, subcategory.key, 'expanded');
+    }
+  });
+};
+const isCategorySelected = (category) => {
+  return selectedCategoryKey.value === category.key;
 };
 </script>
+
 <style scoped>
 .container {
   position: relative;
